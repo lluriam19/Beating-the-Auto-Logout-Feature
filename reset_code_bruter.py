@@ -14,8 +14,8 @@ import time
 import threading
 import sys
 
-URL = "http://hammer.thm:1337/reset_password.php" 
-EMAIL = "tester@hammer.thm"
+URL = "http://hammer.thm:1337/reset_password.php" # endpoint
+EMAIL = "tester@hammer.thm"                       # email/user
 CODES = ["1337", "1234", "0000", "4321", "9999"]  # Códigos a probar, 1 por hilo
 
 HEADERS_TEMPLATE = {

